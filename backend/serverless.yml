@@ -1,0 +1,72 @@
+service: backend
+frameworkVersion: "3.10.1"
+
+provider:
+  name: aws
+  runtime: python3.8
+  stage: dev
+  region: ${env:AWS_DEFAULT_REGION}
+  lambdaHashingVersion: 20201221
+  environment:
+    TBL_GREETINGS: greetings-${self:custom.stage}
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action: dynamodb:*
+          Resource: "*"
+
+functions:
+  fetchGreetings:
+    handler: app.greetings.fetch_greetings
+    events:
+      - http:
+          path: greetings
+          method: get
+          cors: true
+          # authorizer:
+          #   arn: ${self:custom.user-pool.arn}
+
+custom:
+  stage: ${opt:stage, self:provider.stage}
+  dynamodb:
+    stages:
+      - dev
+    start:
+      seed: true
+    seed:
+      greetings:
+        sources:
+          - table: ${self:provider.environment.TBL_GREETINGS}
+            sources: [./seed-data/greetingsTable.json]
+  # user-pool:
+  #   arn: arn:aws:cognito-idp:${aws:region}:${aws:accountId}:userpool/${env:USER_POOL_ID}
+
+resources:
+  Resources:
+    greetingsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.environment.TBL_GREETINGS}
+        AttributeDefinitions:
+          - AttributeName: greeting
+            AttributeType: S
+          - AttributeName: greetingTarget
+            AttributeType: S
+        KeySchema:
+          - AttributeName: greeting
+            KeyType: HASH
+          - AttributeName: greetingTarget
+            KeyType: RANGE
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+
+package:
+  patterns:
+    - "!node_modules/**"
+    - "!venv/**"
+    - "!test/**"
+
+plugins:
+  - serverless-dynamodb-local
