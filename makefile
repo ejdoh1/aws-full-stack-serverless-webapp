@@ -43,4 +43,4 @@ frontend-status:
 	${RUN} cd /work/frontend && amplify status"
 
 start-frontend:
-	${RUN} cd frontend && npm start"
+	${RUN} cd frontend && npm i && npm start"
