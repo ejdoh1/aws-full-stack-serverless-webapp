@@ -1,8 +1,9 @@
 include env.list
 IMAGE ?= ejdoh1/slsclient:1648690002
 ENV_SH ?= /work/scripts/env.sh
-RUN ?= docker run -it --rm --volume $$(pwd):/work --env-file env.list -p 3000:3000 ${IMAGE} bash -c "source ${ENV_SH} &&
-AMPLIFY_PUBLISH ?= ${RUN} cd frontend && amplify publish --yes"
+DOCKER_RUN_OPTS ?= -it
+RUN ?= docker run ${DOCKER_RUN_OPTS} --rm --volume $$(pwd):/work --env-file env.list -p 3000:3000 ${IMAGE} bash -c "source ${ENV_SH} &&
+AMPLIFY_PUBLISH ?= ${RUN} cd frontend && npm i && amplify publish --yes"
 
 push-image: build-image
 	d=$$(date +%s); \
@@ -10,14 +11,12 @@ push-image: build-image
 	docker push ejdoh1/slsclient:$$d; \
 	docker push ejdoh1/slsclient:latest
 
-first-deploy: init-frontend deploy-frontend deploy-backend deploy-frontend-again seed-database frontend-status
+deploy: init-frontend deploy-frontend deploy-backend deploy-frontend-again seed-database frontend-status
 
 build-image:
 	cd docker-image && docker build . -t slsclient
 
 destroy: remove-backend remove-frontend remove-backend
-
-deploy: deploy-frontend deploy-backend
 
 seed-database:
 	${RUN} cd backend && npm i && sls dynamodb seed --online --region ${AWS_DEFAULT_REGION}"

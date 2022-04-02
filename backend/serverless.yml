@@ -24,8 +24,8 @@ functions:
           path: greetings
           method: get
           cors: true
-          # authorizer:
-          #   arn: ${self:custom.user-pool.arn}
+          authorizer:
+            arn: ${self:custom.user-pool.arn}
 
 custom:
   stage: ${opt:stage, self:provider.stage}
@@ -39,8 +39,8 @@ custom:
         sources:
           - table: ${self:provider.environment.TBL_GREETINGS}
             sources: [./seed-data/greetingsTable.json]
-  # user-pool:
-  #   arn: arn:aws:cognito-idp:${aws:region}:${aws:accountId}:userpool/${env:USER_POOL_ID}
+  user-pool:
+    arn: arn:aws:cognito-idp:${aws:region}:${aws:accountId}:userpool/${env:USER_POOL_ID}
 
 resources:
   Resources:
