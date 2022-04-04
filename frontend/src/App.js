@@ -11,7 +11,7 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <Authenticator>
+        <Authenticator hideSignUp={true}>
           {({ signOut, user }) => <Home signOut={signOut} />}
         </Authenticator>
       </header>
