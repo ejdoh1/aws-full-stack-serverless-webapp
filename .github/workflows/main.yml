@@ -27,11 +27,3 @@ jobs:
           fi
           envsubst < env.list.template > env.list
           make deploy
-      - name: Store robot account credentials
-        uses: actions/upload-artifact@v3
-        with:
-          name: robot-account-credentials
-          path: creds.*
-      - uses: stefanzweifel/git-auto-commit-action@v4
-        with:
-          commit_message: Apply AWS Amplify changes
