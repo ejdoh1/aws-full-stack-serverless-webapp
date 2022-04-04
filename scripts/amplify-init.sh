@@ -18,7 +18,7 @@ AWSCLOUDFORMATIONCONFIG="{\
 }"
 AMPLIFY="{\
 \"projectName\":\"frontend\",\
-\"envName\":\"dev\",\
+\"envName\":\"$ENV_NAME\",\
 \"defaultEditor\":\"code\"\
 }"
 FRONTEND="{\

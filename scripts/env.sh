@@ -7,7 +7,7 @@ aws configure set default.region $AWS_DEFAULT_REGION
 export USER_POOL_ID=$(cat /work/frontend/src/aws-exports.js | grep aws_user_pools_id | cut -d'"' -f4)
 
 pushd backend
-export REACT_APP_API_URL=$(sls info --verbose 2>&1 | grep ServiceEndpoint | tr -s ' ' | cut -d' ' -f3)
+export REACT_APP_API_URL=$(sls info --stage $ENV_NAME --verbose 2>&1 | grep ServiceEndpoint | tr -s ' ' | cut -d' ' -f3)
 popd
 
 printenv

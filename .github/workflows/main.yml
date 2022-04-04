@@ -1,7 +1,9 @@
 name: CD
 on:
   push:
-    branches: [main]
+    branches:
+      - main
+      - develop
   workflow_dispatch:
 
 jobs:
@@ -15,5 +17,13 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           DOCKER_RUN_OPTS: ""
         run: |
+          if [[ ${GITHUB_REF##*/} == "main" ]]; then
+              export ENV_NAME=prod
+          elif [[ ${GITHUB_REF##*/} == "develop" ]]; then
+              export ENV_NAME=dev
+          else
+              echo "branch not deployed"
+              exit 0
+          fi
           envsubst < env.list.template > env.list
           make deploy

@@ -19,13 +19,13 @@ build-image:
 destroy: remove-backend remove-frontend remove-backend
 
 seed-database:
-	${RUN} cd backend && npm i && sls dynamodb seed --online --region ${AWS_DEFAULT_REGION}"
+	${RUN} cd backend && npm i && sls dynamodb seed --online --region ${AWS_DEFAULT_REGION} --stage=${ENV_NAME}"
 
 deploy-backend:
-	${RUN} cd backend && npm i && sls deploy"
+	${RUN} cd backend && npm i && sls deploy --stage=${ENV_NAME}"
 
 remove-backend:
-	${RUN} cd backend && npm i && sls remove"
+	${RUN} cd backend && npm i && sls remove --stage=${ENV_NAME}"
 
 remove-frontend:
 	${RUN} cd frontend && amplify delete --force"
